@@ -4,9 +4,14 @@ package cn.itcast.sparkstreaming
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.apache.spark.{SparkConf, SparkContext}
 
-
+/**
+  * 向指定的ip端口发数据，StreamingContext接收到数据将其转换为rdd进行计算
+  */
 object StreamingWordCount {
   def main(args: Array[String]): Unit = {
+
+    //设置日志级别
+    LoggerLevels.setStreamingLogLevels()
 
     //这里的local[2]表示开两个executor线程
     val conf=new SparkConf().setMaster("local[2]").setAppName("StreamingWordCount")
