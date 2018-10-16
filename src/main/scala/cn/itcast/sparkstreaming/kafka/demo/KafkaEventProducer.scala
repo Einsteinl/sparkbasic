@@ -3,7 +3,7 @@ package cn.itcast.sparkstreaming.kafka.demo
 import java.util.Properties
 
 import com.google.gson.{Gson, JsonObject}
-import org.codehaus.jettison.json.JSONObject
+
 
 import scala.util.Properties
 import kafka.javaapi.producer.Producer
@@ -13,9 +13,37 @@ import kafka.producer.ProducerConfig
 
 import scala.util.Random
 
+/**
+  * Kafka+Spark Streaming+Redis编程实践
+  */
 
+/**
+  * 1、手机客户端会收集用户的行为事件（我们以点击事件为例），
+  * 将数据发送到数据服务器，我们假设这里直接进入到Kafka消息队列
+  * 2、后端的实时服务会从Kafka消费数据，将数据读出来并进行实时分析，
+  * 这里选择Spark Streaming，因为Spark Streaming提供了与Kafka整合的内置支持
+  * 3、经过Spark Streaming实时计算程序分析，将结果写入Redis，可以实时获取用户的行为数据，
+  * 并可以导出进行离线综合统计分析
+  */
 
+/**
+  * 写了一个Kafka Producer模拟程序，用来模拟向Kafka实时写入用户行为的事件数据，数据是JSON格式
+  *
+  * {
+  * "uid": "068b746ed4620d25e26055a9f804385f",
+  * "event_time": "1430204612405",
+  * "os_type": "Android",
+  * "click_count": 6
+  * }
+  */
 
+/**
+  * 一个事件包含4个字段：
+  * 　　1、uid：用户编号
+  * 　　2、event_time：事件发生时间戳
+  * 　　3、os_type：手机App操作系统类型
+  * 　　4、click_count：点击次数
+  */
 object KafkaEventProducer {
 
   private val users = Array(
@@ -29,6 +57,7 @@ object KafkaEventProducer {
 
   private var pointer = -1
 
+  //随机用户Id
   def getUserID() : String = {
     pointer = pointer + 1
     if(pointer >= users.length) {
@@ -39,6 +68,7 @@ object KafkaEventProducer {
     }
   }
 
+  //随机生成单击次数
   def click() : Double = {
     random.nextInt(10)
   }
@@ -56,6 +86,7 @@ object KafkaEventProducer {
     props.put("serializer.class", "kafka.serializer.StringEncoder")
 
     val kafkaConfig = new ProducerConfig(props)
+    //new一个生产者
     val producer = new Producer[String, String](kafkaConfig)
 
     while(true) {
