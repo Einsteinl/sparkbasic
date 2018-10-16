@@ -2,6 +2,7 @@ package cn.itcast.sparkstreaming.flume
 
 import java.net.InetSocketAddress
 
+import cn.itcast.sparkstreaming.LoggerLevels
 import org.apache.spark.SparkConf
 import org.apache.spark.storage.StorageLevel
 import org.apache.spark.streaming.flume.FlumeUtils
@@ -13,6 +14,9 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
 object FlumePollWordCount {
 
   def main(args: Array[String]): Unit = {
+
+    LoggerLevels.setStreamingLogLevels()
+
     val conf=new SparkConf().setMaster("local[2]").setAppName("FlumePollWordCount")
 
     val ssc=new StreamingContext(conf,Seconds(5))
