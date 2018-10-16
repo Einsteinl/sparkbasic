@@ -28,6 +28,8 @@ object StateFulWordCount {
     val conf=new SparkConf().setAppName("StateFulWordCount").setMaster("local[2]")
 
     val sc=new SparkContext(conf)
+    //updateStateByKey必须设置setCheckpointDir
+    sc.setCheckpointDir("c://ck")
 
     val ssc=new StreamingContext(sc,Seconds(5))
 
