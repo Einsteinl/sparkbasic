@@ -8,6 +8,7 @@ import org.apache.spark.{SparkConf, SparkContext}
   * 向指定的ip端口发数据，StreamingContext接收到数据将其转换为rdd进行计算
   */
 object StreamingWordCount {
+
   def main(args: Array[String]): Unit = {
 
     //设置日志级别

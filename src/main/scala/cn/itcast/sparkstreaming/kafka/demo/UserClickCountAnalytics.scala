@@ -48,14 +48,16 @@ object UserClickCountAnalytics {
 
     // Compute user click times
     val userClicks = events.map(x => (x.getString("uid"), x.getInt("click_count"))).reduceByKey(_ + _)
+    //将计算完的数据保存到redis中
     userClicks.foreachRDD(rdd => {
       rdd.foreachPartition(partitionOfRecords => {
         partitionOfRecords.foreach(pair => {
           val uid = pair._1
           val clickCount = pair._2
           val jedis = RedisClient.pool.getResource
-          //切换到一数据库
+          //切换到1数据库,这里将数据添加到了redis 的1数据库中
           jedis.select(dbIndex)
+          //用的是redis中的hash数据结构
           jedis.hincrBy(clickHashKey, uid, clickCount)
           RedisClient.pool.returnResource(jedis)
         })
