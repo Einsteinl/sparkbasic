@@ -41,6 +41,7 @@ object DirectKafkaWordCount {
 
     Logger.getLogger("org").setLevel(Level.WARN)
 
+    //赋值参数
     val Array(brokers,topics,groupId)=args
 
     //Create context with 2 second batch interval
@@ -58,7 +59,8 @@ object DirectKafkaWordCount {
     val kafkaParams=Map[String,String](
       "metadata.broker.list" -> brokers,
       "group.id" -> groupId,
-      "auto.offset.reset" -> "smallest"
+      "auto.offset.reset" -> "smallest",
+    "zookeeper.connect" ->"mini1:2181,mini2:2181,mini3:2181"
     )
 
     //创建一个自定义和KafkaUtils功能一样的实例
