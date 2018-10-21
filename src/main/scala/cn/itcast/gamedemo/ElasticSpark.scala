@@ -13,8 +13,8 @@ object ElasticSpark {
 
     val sc =new SparkContext(conf)
    // val query: String="{\"query\":{\"match_all\":{}}}"
-    val start = 1463998397
-    val end = 1463998399
+    val start = 1461340800  //2016/4/23 00:00:00
+    val end = 1461427200    //2016/4/24 00:00:00
     //    val query: String =
     //      s"""{
     //       "query": {"match_all": {}},
@@ -51,9 +51,13 @@ object ElasticSpark {
        }
      }"""
 
+    //拉取elasticSearch中index为tracklog的数据
     val rdd1 = sc.esRDD("tracklog", query)
-    println(rdd1.collect().toBuffer)
+
+    //println(rdd1.collect().toBuffer)
     println(rdd1.collect().size)
+
+
   }
 
 }
