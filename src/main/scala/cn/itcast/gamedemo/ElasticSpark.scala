@@ -12,7 +12,7 @@ object ElasticSpark {
     conf.set("es.index.auto.create","true")
 
     val sc =new SparkContext(conf)
-    val query: String="{\"query\":{\"match_all\":{}}}"
+   // val query: String="{\"query\":{\"match_all\":{}}}"
     val start = 1463998397
     val end = 1463998399
     //    val query: String =
@@ -32,27 +32,26 @@ object ElasticSpark {
     //       }
     //     }"""
     val tp = "1"
-//    val query: String = s"""{
-//       "query": {"match_all": {}},
-//       "filter" : {
-//          "bool": {
-//            "must": [
-//                {"term" : {"access.type" : $tp}},
-//                {
-//                "range": {
-//                  "access.time": {
-//                  "gte": "$start",
-//                  "lte": "$end"
-//                  }
-//                }
-//              }
-//            ]
-//          }
-//       }
-//     }"""
+    val query: String = s"""{
+       "query": {"match_all": {}},
+       "filter" : {
+          "bool": {
+            "must": [
+                {"term" : {"track.type" : $tp}},
+                {
+                "range": {
+                  "track.time": {
+                  "gte": "$start",
+                  "lte": "$end"
+                  }
+                }
+              }
+            ]
+          }
+       }
+     }"""
 
     val rdd1 = sc.esRDD("tracklog", query)
-
     println(rdd1.collect().toBuffer)
     println(rdd1.collect().size)
   }
