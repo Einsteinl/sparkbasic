@@ -31,6 +31,12 @@ import org.apache.spark.{SparkConf, SparkContext}
   * lines terminated by "\n";
   *
   */
+/**
+  * 目标：运用spark去调用spark自带的mllib库中kmeans算法
+  * 业务场景：将样本数据从hive中读入，将样本数据的每行转换成向量形成矩阵
+  *         运用kMeans算法得出样本数据模型，从而达到了为样本数据进行分类
+  *
+  */
 object KmeansFromHive {
 
   def main(args: Array[String]) {
@@ -52,7 +58,7 @@ object KmeansFromHive {
     hiveContext.sql("set spark.sql.shuffle.partitions=1")  //默认shuffle分区数是20个
 
     //先从hive中加载到日志数据
-    hiveContext.sql("use mllib")
+    hiveContext.sql("use stock")
     //查询每家店的商品总数和总金额
     val data = hiveContext.sql("select a.orderlocation, sum(b.itemqty) totalqty,sum(b.itemamout) totalamount from tbl_stock a join tbl_stockdetail b on a.orderid=b.orderid group by a.orderlocation")
     /*data.collect().foreach(x => {
