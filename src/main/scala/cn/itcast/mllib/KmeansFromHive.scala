@@ -38,7 +38,7 @@ object KmeansFromHive {
     LogLevelSetter.setLevel()
 
     //  如果在windows本地跑，需要从widnows访问HDFS，需要指定一个合法的身份
-    System.setProperty("HADOOP_USER_NAME", "hadoop")
+    System.setProperty("HADOOP_USER_NAME", "root")
 
     val conf = new SparkConf()
     conf.setMaster("local").setAppName("kmeans")
@@ -47,16 +47,19 @@ object KmeansFromHive {
 
     val hiveContext = new HiveContext(sc)
 
+    import hiveContext.implicits._
+
     hiveContext.sql("set spark.sql.shuffle.partitions=1")  //默认shuffle分区数是20个
 
     //先从hive中加载到日志数据
     hiveContext.sql("use mllib")
+    //查询每家店的商品总数和总金额
     val data = hiveContext.sql("select a.orderlocation, sum(b.itemqty) totalqty,sum(b.itemamout) totalamount from tbl_stock a join tbl_stockdetail b on a.orderid=b.orderid group by a.orderlocation")
     /*data.collect().foreach(x => {
       println(x)
     })*/
 
-    //将hive中查询过来的数据，每一条变成一个向量，整个数据集变成矩阵
+    //将hive中查询过来的数据，每一条变成一个向量，整个数据集就变成矩阵
     val parsedata = data.map{
       case Row(_,totalqty,totalamount) =>
         val features = Array[Double](totalqty.toString.toDouble,totalamount.toString.toDouble)
@@ -65,8 +68,12 @@ object KmeansFromHive {
     }
 
     //用kmeans对样本向量进行训练得到模型
+    //聚成3类
     val numcluster = 3
+
     val maxIterations = 20   //指定最大迭代次数
+    //聚类最后还用于分类，一开始有大堆样本没有标签，聚完之后就有了标签，以后就可以做分类
+    //train方法后返回一个聚类模型，里边存着中心点
     val model = KMeans.train(parsedata,numcluster,maxIterations)
 
     //用模型对我们到数据进行预测
