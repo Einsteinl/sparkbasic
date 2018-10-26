@@ -61,8 +61,8 @@ object ElasticSpark {
     求网站的有效用户，访问了网站（事件类型1）并且打开了登录器（事件类型2）
      */
     val rdd2=rdd1.map(x =>{
-      val message=x._2.get("track").toList
-      message(2)
+      val message=x._2
+
     })
     println(rdd2.collect().toBuffer)
 
