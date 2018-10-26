@@ -87,7 +87,7 @@ object KmeansFromHive {
         //将向量输入model中进行预测，得到预测值
         val prediction = model.predict(linevector)
 
-        //返回每一行结果String
+        //返回每一行结果String，订单，商品总量，商品总金额，预测类别
         orderlocation + " " + totalqty + " " + totalamount + " " + prediction
 
     }
