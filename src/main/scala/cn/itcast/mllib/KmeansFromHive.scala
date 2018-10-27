@@ -36,6 +36,13 @@ import org.apache.spark.{SparkConf, SparkContext}
   * 业务场景：将样本数据从hive中读入，将样本数据的每行转换成向量形成矩阵
   *         运用kMeans算法得出样本数据模型，从而达到了为样本数据进行分类
   *
+  * 由于包冲突在运行的时候把这个依赖去掉
+  * <dependency>
+  * <groupId>org.apache.hadoop</groupId>
+  * <artifactId>hadoop-client</artifactId>
+  * <version>${hadoop.version}</version>
+  * </dependency>
+  *
   */
 object KmeansFromHive {
 
